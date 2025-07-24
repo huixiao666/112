@@ -1,0 +1,766 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>皮卡学习网站</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #1a1a1a;
+            color: white;
+            font-family: Arial, sans-serif;
+            padding: 10px;
+        }
+
+        .container {
+            max-width: 400px;
+            margin: 0 auto;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .item {
+            background-color: #2a2a2a;
+            border-radius: 8px;
+            overflow: hidden;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+        .item:hover {
+            transform: scale(1.02);
+        }
+
+        .thumbnail {
+            position: relative;
+            width: 100%;
+            height: 120px;
+            background: linear-gradient(45deg, #444, #666);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #888;
+            font-size: 12px;
+            overflow: hidden;
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            cursor: pointer;
+        }
+
+        .duration {
+            position: absolute;
+            bottom: 5px;
+            right: 5px;
+            background: rgba(0,0,0,0.7);
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 11px;
+            z-index: 2;
+        }
+
+        .title {
+            padding: 8px;
+            font-size: 13px;
+            line-height: 1.3;
+            color: #ddd;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .bottom-nav {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            height: 50px;
+            background-color: #1a1a1a;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            border-top: 1px solid #333;
+        }
+
+        .nav-item {
+            color: #888;
+            font-size: 20px;
+            cursor: pointer;
+        }
+
+        .nav-item:hover {
+            color: white;
+        }
+
+        /* 全屏查看器样式 */
+        .fullscreen-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            display: none;
+            z-index: 1000;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .fullscreen-overlay.active {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fullscreen-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .fullscreen-image {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 24px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 0.2s;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .image-info {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.7);
+            padding: 15px;
+            border-radius: 8px;
+            color: white;
+        }
+
+        .image-title {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .image-duration {
+            font-size: 14px;
+            color: #ccc;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .zoom-hint {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: rgba(0, 0, 0, 0.7);
+            color: white;
+            padding: 5px 8px;
+            border-radius: 4px;
+            font-size: 10px;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+
+        .thumbnail:hover .zoom-hint {
+            opacity: 1;
+        }
+    </style>
+</head>
+<h1><a href="https://bpn.372164885.xyz/">视频</a></h1>
+<h3>推荐挂梯子观看</h3>   
+<body>
+    <div class="container">
+        <div class="grid">
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/QOcw/GWUygZOWIAAB7XS.jpeg" alt="Big Boat" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/NlCA/Image_1752671454050.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/qmUY/Image_1752989820877.jpg" alt="教程视频" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/P4Il/IMG_20250720_210747_090.jpg" alt="课程内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+
+<div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/E6iL/GffO8aBaQAAklX_.jpeg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/W1Fl/GuCdODKXUAABDRJ.jpg" alt="教学视频" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/OLsl/GOukHywbYAAom4x.jpeg" alt="培训内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/MluL/GPoGzXbbcAAr2b0.jpeg" alt="课程视频" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/Ybha/GPZEu-Lb0AAm0p-.jpeg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/02H0/GR3maQObsAAF70V.jpeg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/wBtJ/GTZiSh4agAIqG12.jpeg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/m4Tw/GYtkXswa0AAoxPP.jpeg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/21fM/GdIrbc2agAE1sjo.jpeg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/4ASe/Gl0UOQ9akAAb1zO.jpeg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/n26cm/GsWLxJ1bUAAqTn4.jpeg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/G22Cv/IMG_20250709_183213_910.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/6NPi0/IMG_20250709_183212_596.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/K3NUx/IMG_20250709_183219_355.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/1Y3Ik/IMG_20250707_184617_054.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/XpEFD/IMG_20250707_184617_851.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/ry8s0/IMG_20250707_184600_786.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/LrBuZ/IMG_20250707_184556_429.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/kPQhY/IMG_20250707_184552_837.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/zEeHm/IMG_20250707_184549_741.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/vpGtO/Image_1751884141315.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/7EGTw/IMG_20250703_223918_836.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/A4OUA/IMG_20250703_224150_783.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/o8BSN/IMG_20250703_154402_281.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/9K6c2/IMG_20250703_153607_596.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/D9OcL/IMG_20250703_153322_375.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/lwmUo/IMG_20250703_153440_188.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/3PqIe/IMG_20250703_153424_475.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/5koi3/Image_1751373813787.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/xELFJ/IMG_20250625_100727_698.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/y6AhJ/IMG_20250625_103654_800.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/JG9um/IMG_20250625_103323_006.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/bK2hZ/IMG_20250625_103326_460.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/g3qcE/IMG_20250625_103328_668.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/pnZtB/IMG_20250625_102725_996.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/e9etL/IMG_20250625_102340_849.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/Zo0f3/IMG_20250625_102245_084.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/aGNfw/IMG_20250625_102231_322.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/BAaF3/IMG_20250625_102220_412.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/8PvCm/IMG_20250625_101713_959.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/QBOsw/IMG_20250625_101717_353.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/NAlhA/IMG_20250625_101350_944.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/qlmiY/IMG_20250625_101346_024.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/PM4fl/IMG_20250625_100743_160.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/Ep6sL/Image_1751206991959.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/Wm1ul/Image_1751207000000.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+            <div class="item">
+                <div class="thumbnail">
+                    <img src="https://plc.372164885.xyz/f/OrLhl/Image_1751207013635.jpg" alt="学习内容" onclick="openFullscreen(this)">
+                    <div class="duration"></div>
+                    <div class="zoom-hint">点击放大</div>
+                </div>
+                <div class="title"></div>
+            </div>
+            
+        </div>
+    </div>
+
+
+
+    <!-- 全屏查看器 -->
+    <div class="fullscreen-overlay" id="fullscreenOverlay">
+        <button class="close-btn" onclick="closeFullscreen()">×</button>
+        <div class="fullscreen-content">
+            <img class="fullscreen-image" id="fullscreenImage" src="" alt="">
+        </div>
+        <div class="image-info" id="imageInfo">
+            <div class="image-title" id="imageTitle"></div>
+            <div class="image-duration" id="imageDuration"></div>
+        </div>
+    </div>
+
+    <script>
+        // 全屏查看功能
+        function openFullscreen(img) {
+            const overlay = document.getElementById('fullscreenOverlay');
+            const fullscreenImg = document.getElementById('fullscreenImage');
+            const imageTitle = document.getElementById('imageTitle');
+            const imageDuration = document.getElementById('imageDuration');
+            
+            // 获取图片信息
+            const item = img.closest('.item');
+            const title = item.querySelector('.title').textContent;
+            const duration = item.querySelector('.duration').textContent;
+            
+            // 设置全屏图片
+            fullscreenImg.src = img.src;
+            fullscreenImg.alt = img.alt;
+            imageTitle.textContent = title;
+            imageDuration.textContent = `时长: ${duration}`;
+            
+            // 显示全屏查看器
+            overlay.classList.add('active');
+            document.body.style.overflow = 'hidden'; // 防止背景滚动
+        }
+
+        function closeFullscreen() {
+            const overlay = document.getElementById('fullscreenOverlay');
+            overlay.classList.remove('active');
+            document.body.style.overflow = 'auto'; // 恢复滚动
+        }
+
+        // 点击背景关闭全屏
+        document.getElementById('fullscreenOverlay').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeFullscreen();
+            }
+        });
+
+        // 键盘ESC关闭全屏
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                closeFullscreen();
+            }
+        });
+
+        // 原有的点击事件（除了图片）
+        document.querySelectorAll('.item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                // 如果点击的不是图片，则执行原有逻辑
+                if (!e.target.tagName.toLowerCase() === 'img') {
+                    console.log('点击了项目:', this.querySelector('.title').textContent);
+                }
+            });
+        });
+
+        // 底部导航点击事件
+        document.querySelectorAll('.nav-item').forEach(nav => {
+            nav.addEventListener('click', function() {
+                console.log('点击了导航');
+            });
+        });
+
+        // 防止图片拖拽
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('dragstart', function(e) {
+                e.preventDefault();
+            });
+        });
+    </script>
+</body>
+</html>
